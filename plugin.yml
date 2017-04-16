@@ -1,0 +1,49 @@
+name: MobTags-LEET.CC
+author: xXSirButterXx
+version: 1.0.0
+description: MobTags, the NPC plugin for PocketMine/Genisys
+main: slapper\Main
+api: [3.0.0-ALPHA4, 3.0.0-ALPHA5, 3.0.0-ALPHA6]
+website: https://github.com/xXSirButterXx/MobTags
+
+commands:
+  mobtags:
+    description: Create a MobTag, or edit an existing one!
+    usage: "/mobtags [args]..."
+    permission: mobtags.command
+  rca:
+    description: Execute a command as someone else!
+    usage: "/rca <player> <command>"
+    permission: mobtags.rca
+    
+permissions:
+  mobtags:
+    description: Allow using all MobTag Properties
+    default: op
+  mobtags.command:
+    description: Allow using /mobtags
+    default: op
+  mobtags.create:
+    description: Allow using command /mobtags create
+    default: op
+  mobtags.edit:
+    description: Allow editing MobTag entity data with /mobtags edit
+    default: op
+  mobtags.rca:
+    description: Allow running commands as other players
+    default: op
+  mobtags.remove:
+    description: Allow removing MobTag entities with /mobtags remove [id]
+    default: op
+  mobtags.id:
+    description: Allow viewing entity ID
+    default: op
+  mobtags.help:
+    description: Allow viewing MobTags help page
+    default: op
+  mobtags.nothing:
+    description: Allow doing nothing
+    default: op
+  mobtags.seeId:
+    description: Allow seeing entity IDs under the names of Slapper NPCs
+    default: false
