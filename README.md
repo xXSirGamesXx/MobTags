@@ -3,5 +3,6 @@ ___MobTags, the NPC plugin for PocketMine/Genisys___
 
 -----------------------------------
 
-- All feaatures of slapper
+- All features of slappe
 - All mobs (Almost)
+
