@@ -27,8 +27,17 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
 use slapper\entities\other\SlapperBoat;
+use slapper\entities\other\SlapperDragonFireball;
+use slapper\entities\other\SlapperFishingHook;
+use slapper\entities\other\SlapperXPorb;
+use slapper\entities\other\SlapperFireball;
+use slapper\entities\other\SlapperEndCrystal;
 use slapper\entities\other\SlapperFallingSand;
 use slapper\entities\other\SlapperMinecart;
+use slapper\entities\other\SlapperMinecartTNT;
+use slapper\entities\other\SlapperMinecartHopper;
+use slapper\entities\other\SlapperMinecartChest;
+use slapper\entities\other\SlapperWitherSkull;
 use slapper\entities\other\SlapperPrimedTNT;
 use slapper\entities\SlapperBat;
 use slapper\entities\SlapperBlaze;
@@ -37,16 +46,21 @@ use slapper\entities\SlapperChicken;
 use slapper\entities\SlapperCow;
 use slapper\entities\SlapperCreeper;
 use slapper\entities\SlapperEnderman;
+use slapper\entities\SlapperEndermite;
 use slapper\entities\SlapperEntity;
 use slapper\entities\SlapperGhast;
+use slapper\entities\SlapperGuardian;
 use slapper\entities\SlapperHuman;
 use slapper\entities\SlapperIronGolem;
 use slapper\entities\SlapperLavaSlime;
 use slapper\entities\SlapperMushroomCow;
 use slapper\entities\SlapperOcelot;
 use slapper\entities\SlapperPig;
+use slapper\entities\SlapperPolarBear;
 use slapper\entities\SlapperPigZombie;
 use slapper\entities\SlapperSheep;
+use slapper\entities\SlapperShulker;
+use slapper\entities\SlapperShulkerBullet;
 use slapper\entities\SlapperSilverfish;
 use slapper\entities\SlapperSkeleton;
 use slapper\entities\SlapperSlime;
@@ -55,10 +69,13 @@ use slapper\entities\SlapperSpider;
 use slapper\entities\SlapperSquid;
 use slapper\entities\SlapperVillager;
 use slapper\entities\SlapperWolf;
+use slapper\entities\SlapperWither;
 use slapper\entities\SlapperZombie;
 use slapper\entities\SlapperZombieVillager;
 use slapper\entities\SlapperHorse;
 use slapper\entities\SlapperDonkey;
+use slapper\entities\SlapperDragon;
+//use slapper\entities\SlapperElderGuardian;
 use slapper\entities\SlapperMule;
 use slapper\entities\SlapperSkeletonHorse;
 use slapper\entities\SlapperZombieHorse;
@@ -85,7 +102,12 @@ class Main extends PluginBase implements Listener {
         "Horse", "Donkey", "Mule", "SkeletonHorse",
         "ZombieHorse", "Witch", "Rabbit", "Stray",
         "Husk", "WitherSkeleton", "IronGolem", "Snowman",
-        "MagmaCube", "Squid"
+        "MagmaCube", "Squid", "Wither", "Dragon", 
+		"EndCrystal", "Shulker", "Guardian", "Endermite", 
+		"ShulkerBullet", "MinecartTNT", "MinecartHopper", 
+		"MinecartChest", "PolarBear", "WitherSkull", 
+		"Fireball", "DragonFireball", "FishingHook", 
+		"XPOrb",
     ];
 
     const ENTITY_ALIASES = [
@@ -117,6 +139,25 @@ class Main extends PluginBase implements Listener {
         "remove: /mobtags remove [id]",
         "version: /mobtags version",
         "cancel: /mobtags cancel",
+		"entities: /mobtags moblist",
+    ];
+	public $entArgs = [
+        "Chicken, Pig, Sheep, Cow,",
+        "MushroomCow, Wolf, Enderman, Spider,",
+        "Skeleton, PigZombie, Creeper, Slime,",
+        "Silverfish, Villager, Zombie, Human,",
+        "Bat, CaveSpider, LavaSlime, Ghast,",
+        "Ocelot, Blaze, ZombieVillager, Snowman,",
+        "Minecart, FallingSand, Boat, PrimedTNT,",
+        "Horse, Donkey, Mule, SkeletonHorse,",
+        "ZombieHorse, Witch, Rabbit, Stray,",
+        "Husk, WitherSkeleton, IronGolem, Snowman,",
+        "MagmaCube, Squid, Wither, Dragon,", 
+		"EndCrystal, Shulker, Guardian, Endermite,", 
+		"ShulkerBullet, MinecartTNT, MinecartHopper,", 
+		"MinecartChest, PolarBear, WitherSkull,",
+		"Fireball, DragonFireball, FishingHook,",
+		"XPOrb",
     ];
     public $editArgs = [
         "helmet: /mobtags edit <eid> helmet <id>",
@@ -140,8 +181,12 @@ class Main extends PluginBase implements Listener {
         Entity::registerEntity(SlapperCreeper::class, true);
         Entity::registerEntity(SlapperBat::class, true);
         Entity::registerEntity(SlapperSheep::class, true);
+		Entity::registerEntity(SlapperShulker::class, true);
+		Entity::registerEntity(SlapperShulkerBullet::class, true);
         Entity::registerEntity(SlapperPigZombie::class, true);
         Entity::registerEntity(SlapperGhast::class, true);
+		Entity::registerEntity(SlapperXPOrb::class, true);
+		Entity::registerEntity(SlapperGuardian::class, true);
         Entity::registerEntity(SlapperBlaze::class, true);
         Entity::registerEntity(SlapperIronGolem::class, true);
         Entity::registerEntity(SlapperSnowman::class, true);
@@ -154,6 +199,7 @@ class Main extends PluginBase implements Listener {
         Entity::registerEntity(SlapperCow::class, true);
         Entity::registerEntity(SlapperSpider::class, true);
         Entity::registerEntity(SlapperPig::class, true);
+		Entity::registerEntity(SlapperPolarBear::class, true);
         Entity::registerEntity(SlapperMushroomCow::class, true);
         Entity::registerEntity(SlapperWolf::class, true);
         Entity::registerEntity(SlapperLavaSlime::class, true);
@@ -162,12 +208,23 @@ class Main extends PluginBase implements Listener {
         Entity::registerEntity(SlapperSlime::class, true);
         Entity::registerEntity(SlapperChicken::class, true);
         Entity::registerEntity(SlapperEnderman::class, true);
+		Entity::registerEntity(SlapperEndermite::class, true);
         Entity::registerEntity(SlapperCaveSpider::class, true);
         Entity::registerEntity(SlapperBoat::class, true);
+		Entity::registerEntity(SlapperEndCrystal::class, true);
         Entity::registerEntity(SlapperMinecart::class, true);
+		Entity::registerEntity(SlapperMinecartTNT::class, true);
+		Entity::registerEntity(SlapperFireball::class, true);
+		Entity::registerEntity(SlapperDragonFireball::class, true);
+		Entity::registerEntity(SlapperWitherSkull::class, true);
+		Entity::registerEntity(SlapperMinecartHopper::class, true);
+		Entity::registerEntity(SlapperMinecartChest::class, true);
         Entity::registerEntity(SlapperPrimedTNT::class, true);
         Entity::registerEntity(SlapperHorse::class, true);
+		Entity::registerEntity(SlapperfishingHook::class, true);
         Entity::registerEntity(SlapperDonkey::class, true);
+		Entity::registerEntity(SlapperDragon::class, true);
+		//Entity::registerEntity(SlapperElder.Guardian::class, true);
         Entity::registerEntity(SlapperMule::class, true);
         Entity::registerEntity(SlapperSkeletonHorse::class, true);
         Entity::registerEntity(SlapperZombieHorse::class, true);
@@ -176,6 +233,7 @@ class Main extends PluginBase implements Listener {
         Entity::registerEntity(SlapperStray::class, true);
         Entity::registerEntity(SlapperHusk::class, true);
         Entity::registerEntity(SlapperWitherSkeleton::class, true);
+		Entity::registerEntity(SlapperWither::class, true);
         Entity::registerEntity(SlapperFallingSand::class, true);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
@@ -563,7 +621,7 @@ class Main extends PluginBase implements Listener {
                                 } else {
                                     $sender->sendMessage($this->helpHeader);
                                     foreach ($this->editArgs as $msgArg) {
-                                        $sender->sendMessage(TextFormat::WHITE . " - " . $msgArg . "\n");
+                                        $sender->sendMessage(TextFormat::GRAY . " - " . $msgArg . "\n");
                                     }
                                     return true;
                                 }
@@ -576,7 +634,16 @@ class Main extends PluginBase implements Listener {
                         case "?":
                             $sender->sendMessage($this->helpHeader);
                             foreach ($this->mainArgs as $msgArg) {
-                                $sender->sendMessage(TextFormat::WHITE . " - " . $msgArg . "\n");
+                                $sender->sendMessage(TextFormat::GRAY . " - " . $msgArg . "\n");
+                            }
+                            return true;
+                            break;
+						case "moblist":
+						case "mobs":
+						case "entities":
+                            $sender->sendMessage($this->helpHeader);
+                            foreach ($this->entArgs as $msgArg) {
+                                $sender->sendMessage(TextFormat::GRAY . $msgArg);
                             }
                             return true;
                             break;
